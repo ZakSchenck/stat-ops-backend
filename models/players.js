@@ -38,7 +38,7 @@ exports.deletePlayerById = async (id) => {
  * @param {number} id 
  * @returns {object}
  */
-exports.getSinglePlayer = async (id) => {
+exports.getSinglePlayer = async (playerId, userId) => {
     const queryResult = await pool.query('SELECT * FROM players WHERE id = $1 AND user_id = $2', [playerId, userId]);
     return queryResult.rows[0];
 }

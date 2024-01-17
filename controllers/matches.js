@@ -25,7 +25,7 @@ exports.getAllSndMatches = async (req, res) => {
  // POST request for creating a new Hardpoint match in player profile
 exports.addHardpointMatch = async (req, res) => {
     try {
-        const playerId = req.params.playerId; 
+        const playerId = req.params.id; 
         const matchData = req.body;
 
         const updatedStats = await Match.addHardpointMatch(playerId, matchData);
@@ -39,7 +39,7 @@ exports.addHardpointMatch = async (req, res) => {
 // POST request for creating a new SnD match in player profile
 exports.addSndMatch = async (req, res) => {
     try {
-        const playerId = req.params.playerId; 
+        const playerId = req.params.id; 
         const matchData = req.body;
 
         const updatedStats = await Match.addSndMatch(playerId, matchData);
@@ -57,11 +57,17 @@ exports.addSndMatch = async (req, res) => {
 exports.deleteHardpointMatch = async (req, res) => {
     try {
         const id = req.params.id;
-        await Match.deleteHardpointMatch(id);
-        res.status(200).send(`Match with ID ${id} was successfully deleted.`);
+        const playerId = req.params.playerId;
+        const affectedRows = await Match.deleteHardpointMatch(id, playerId);
+
+        if (affectedRows > 0) {
+            res.status(200).send(`Match with ID ${id} was successfully deleted.`);
+        } else {
+            res.status(404).send(`Match with ID ${id} not found.`);
+        }
     } catch (error) {
         console.error(error.message);
-        res.status(500).send(`500 Server Error on 'deleteHardpointMatch': ${error.message}`)
+        res.status(500).send(`500 Server Error on 'deleteHardpointMatch': ${error.message}`);
     }
 }
 
@@ -69,13 +75,19 @@ exports.deleteHardpointMatch = async (req, res) => {
  * DELETE request for a single SnD match
  * @param {number} matchId 
  */
-exports.deleteSndMatch = async (matchId) => {
+exports.deleteSndMatch = async (req, res) => {
     try {
         const id = req.params.id;
-        await Match.deleteSndMatch(id);
-        res.status(200).send(`Match with ID ${id} was successfully deleted.`);
+        const playerId = req.params.playerId;
+        const affectedRows = await Match.deleteSndMatch(id, playerId);
+
+        if (affectedRows > 0) {
+            res.status(200).send(`Match with ID ${id} was successfully deleted.`);
+        } else {
+            res.status(404).send(`Match with ID ${id} not found.`);
+        }
     } catch (error) {
         console.error(error.message);
-        res.status(500).send(`500 Server Error on 'deleteSndMatch': ${error.message}`)
+        res.status(500).send(`500 Server Error on 'deleteSndMatch': ${error.message}`);
     }
 }

@@ -3,9 +3,10 @@ const Player = require('../models/players');
 // GET request for getting all players
 exports.getAllPlayers = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.user_id
         const players = await Player.getAllPlayers(userId);
         res.json(players);
+        
     } catch (error) {
         console.error(error.message);
         res.status(500).send(`500 Server Error on 'getAllPlayers': ${error.message}`);
@@ -15,7 +16,7 @@ exports.getAllPlayers = async (req, res) => {
 // GET request for selecting a single player
 exports.getSinglePlayer = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.user_id
         const playerId = req.params.id;
         const result = await Player.getSinglePlayer(playerId, userId);
 
@@ -34,7 +35,7 @@ exports.getSinglePlayer = async (req, res) => {
 exports.createNewPlayer = async (req, res) => {
     try {
         // ID of the logged-in user
-        const userId = req.user.id;
+        const userId = req.user.user_id;
         const { gamertag, profilePicture } = req.body;
         // Default player stats structure
         const defaultStats = {
@@ -80,7 +81,7 @@ exports.createNewPlayer = async (req, res) => {
 // DELETE request for deleting player 
 exports.deletePlayer = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user.userId;
         const playerId = req.params.id;
         await Player.deletePlayerById(playerId, userId);
         res.status(200).send(`Player with ID ${playerId} was successfully deleted.`);
